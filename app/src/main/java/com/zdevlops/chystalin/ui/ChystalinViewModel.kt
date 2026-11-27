@@ -97,7 +97,7 @@ class ChystalinViewModel(app: Application) : AndroidViewModel(app) {
         player.play()
         currentTrackId = list[startIndex.coerceIn(0, list.lastIndex)].id
         if (playlistId != null) {
-            playlists.firstOrNull { it.id == playlistId }?.let { setRotation(it.rotation) }
+            playlists.firstOrNull { it.id == playlistId }?.let { applyRotation(it.rotation) }
         }
     }
 
@@ -134,10 +134,10 @@ class ChystalinViewModel(app: Application) : AndroidViewModel(app) {
             RotationMode.REPEAT_ONE -> RotationMode.SHUFFLE
             RotationMode.SHUFFLE -> RotationMode.OFF
         }
-        setRotation(next)
+        applyRotation(next)
     }
 
-    private fun setRotation(mode: RotationMode) {
+    private fun applyRotation(mode: RotationMode) {
         rotation = mode
         player.repeatMode = when (mode) {
             RotationMode.REPEAT_ONE -> Player.REPEAT_MODE_ONE
@@ -150,7 +150,7 @@ class ChystalinViewModel(app: Application) : AndroidViewModel(app) {
     fun setPlaylistRotation(playlistId: String, mode: RotationMode) {
         playlists = playlists.map { if (it.id == playlistId) it.copy(rotation = mode) else it }
         repo.savePlaylists(playlists)
-        setRotation(mode)
+        applyRotation(mode)
     }
 
     fun importUris(uris: List<Uri>) {
